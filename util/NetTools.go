@@ -78,7 +78,7 @@ func IsPingable(wg *sizewaitgroup.SizedWaitGroup,ip string,ips *[]string){
 扫描局域网
  */
 func LanScan() (ips []string) {
-	swg := sizewaitgroup.New(30)
+	swg := sizewaitgroup.New(50)
 
 	//var threadGroup = sync.WaitGroup{}
 	//threadGroup.Add(255-2)
