@@ -1,6 +1,7 @@
 package util
 
 import (
+	"../sizewaitgroup"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -11,7 +12,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"sync"
 )
 
 var OnlineIps=[]string{}
@@ -39,7 +39,7 @@ func IsOnline(ip string) bool{
 	}
 	return false
 }
-func IsPingable(wg *sync.WaitGroup,ip string,ips *[]string){
+func IsPingable(wg *sizewaitgroup.SizedWaitGroup,ip string,ips *[]string){
 	defer wg.Done()
 	cmd := exec.Command("ping", "-c","1", "-W","1",ip)
 	stdout, err := cmd.StdoutPipe()
@@ -60,16 +60,16 @@ func IsPingable(wg *sync.WaitGroup,ip string,ips *[]string){
 	if runtime.GOOS=="darwin"{
 		if strings.Contains(string(opBytes), "1 packets received")==true{
 			*ips=append(*ips, ip)
-			//fmt.Println("扫描到IP:",ip)
+			fmt.Println("扫描到IP:",ip)
 		}else{
-			//fmt.Println("IP嗅探失败:",ip)
+			fmt.Println("IP嗅探失败:",ip)
 		}
 	}else if runtime.GOOS=="linux"{
 		if strings.Contains(string(opBytes), "64 bytes")==true{
 			*ips=append(*ips, ip)
-			//fmt.Println("扫描到IP:",ip)
+			fmt.Println("扫描到IP:",ip)
 		}else{
-			//fmt.Println("IP嗅探失败:",ip)
+			fmt.Println("IP嗅探失败:",ip)
 		}
 	}
 }
@@ -78,14 +78,17 @@ func IsPingable(wg *sync.WaitGroup,ip string,ips *[]string){
 扫描局域网
  */
 func LanScan() (ips []string) {
-	var threadGroup = sync.WaitGroup{}
-	threadGroup.Add(255-2)
+	swg := sizewaitgroup.New(30)
+
+	//var threadGroup = sync.WaitGroup{}
+	//threadGroup.Add(255-2)
 	for i := 2; i < 255; i++ {
-		//fmt.Println("正在扫描IP:","192.168.2."+strconv.Itoa(i))
-		go IsPingable(&threadGroup,"192.168.100."+strconv.Itoa(i),&ips)
+		swg.Add()
+		fmt.Println("正在扫描IP:","192.168.2."+strconv.Itoa(i))
+		go IsPingable(&swg,"192.168.100."+strconv.Itoa(i),&ips)
 	}
 	//等待所有线程完成
-	threadGroup.Wait()
+	swg.Wait()
 	sort.Strings(ips)
 	fmt.Println(ips)
 	return

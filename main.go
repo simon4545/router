@@ -36,7 +36,7 @@ func OnlineTimerExec() {
 }
 
 func LanCheckTimerExec() {
-	d := time.Duration(time.Minute * 3)
+	d := time.Duration(time.Second * 30)
 	t := time.NewTicker(d)
 	defer t.Stop()
 
