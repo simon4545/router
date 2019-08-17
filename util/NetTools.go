@@ -84,8 +84,8 @@ func LanScan() (ips []string) {
 	//threadGroup.Add(255-2)
 	for i := 2; i < 255; i++ {
 		swg.Add()
-		fmt.Println("正在扫描IP:","192.168.2."+strconv.Itoa(i))
-		go IsPingable(&swg,"192.168.100."+strconv.Itoa(i),&ips)
+		fmt.Println("正在扫描IP:","192.168.1."+strconv.Itoa(i))
+		go IsPingable(&swg,"192.168.1."+strconv.Itoa(i),&ips)
 	}
 	//等待所有线程完成
 	swg.Wait()
