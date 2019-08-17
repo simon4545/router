@@ -131,7 +131,7 @@ func ReDial() bool{
 
 func SendMail(title string,content string) {
 	auth := smtp.PlainAuth("", "simon4545@qq.com", "simon518418", "smtp.qq.com")
-	to := []string{"xlzhou@forke.cn","alinger@forke.cn","simon4545@126.com","1176877783@qq.com"}
+	to := []string{"zlongxiao@126.com","278699832@qq.com","simon4545@126.com","1176877783@qq.com"}
 	nickname := "simon4545"
 	user := "simon4545@qq.com"
 	subject := title+"网络故障"
